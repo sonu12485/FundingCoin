@@ -8,6 +8,7 @@ import { getUserProfile } from '../actions/user';
 import web3 from '../ethereum/web3';
 import CrowdFundingContract from '../ethereum/crowdfunding';
 
+import Check from './Check';
 import Topnav from './Topnav';
 
 class Dashboard extends Component 
@@ -36,11 +37,13 @@ class Dashboard extends Component
     {
         return (
             <div>
-            <Topnav />
+                <Check />
 
-            <div className="welcome" >
-                Welcome {this.props.user?this.props.user.name:null},
-            </div>
+                <Topnav />
+
+                <div className="welcome" >
+                    Welcome {this.props.user?this.props.user.name:null} ,
+                </div>
             </div>
         );
     }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import {
     Collapse,
@@ -47,7 +48,9 @@ class Topnav extends Component
                                 View Profile
                             </DropdownItem>
                             <DropdownItem divider />
-                            <DropdownItem>
+                            <DropdownItem onClick={ () => {
+                                this.props.history.push("/change/name")
+                            }}>
                                 Change UserName
                             </DropdownItem>
                         </DropdownMenu>
@@ -60,4 +63,4 @@ class Topnav extends Component
     }
 }
 
-export default Topnav;
+export default withRouter(Topnav);

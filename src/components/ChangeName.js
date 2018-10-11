@@ -6,26 +6,17 @@ import Check from './Check';
 import web3 from '../ethereum/web3';
 import CrowdFundingContract from '../ethereum/crowdfunding';
 
-import { Button, Form, FormGroup, Label, Input, FormText, Alert } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 
-class Register extends Component 
+class ChangeName extends Component 
 {
     constructor(props) {
         super(props);
         this.state = {
-            account: "",
             name: "",
             loading: false,
             error: ""
         }
-    }
-    
-    async componentDidMount()
-    {
-        const accounts = await web3.eth.getAccounts();
-        this.setState({
-            account: accounts[0]
-        });
     }
 
     onFormSubmit = async (event) =>
@@ -39,12 +30,14 @@ class Register extends Component
 
         try
         {
-            await CrowdFundingContract.methods.register(
-                this.state.name,
-                this.state.account
+            const accounts = await web3.eth.getAccounts();
+
+            await CrowdFundingContract.methods.changeMemberDetails(
+                accounts[0],
+                this.state.name
             )
             .send({
-                from: this.state.account
+                from: accounts[0]
             });
 
             this.props.history.push("/dashboard");
@@ -67,17 +60,17 @@ class Register extends Component
                 <Check />
 
                 <div className="header" >
-                    <div className="heading" >Register</div>
+                    <div className="heading" >Change Name</div>
                 </div>
 
                 <div className="form-container" >
                     <Form onSubmit={this.onFormSubmit} >
                     <FormGroup>
-                        <Label>Name</Label>
+                        <Label>New Name</Label>
                         <Input 
                             type="text" 
                             name="name" 
-                            placeholder="Enter Your UserName" 
+                            placeholder="Enter Your New UserName" 
                             value={this.state.name}
                             onChange={ (event) => {
                                 this.setState({
@@ -85,18 +78,6 @@ class Register extends Component
                                 })
                             }}
                         />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>Your Account Address</Label>
-                        <Input 
-                            type="text" 
-                            name="account" 
-                            value={this.state.account} 
-                            disabled
-                        />
-                        <FormText color="muted">
-                            To change the account address change the account in metamask.
-                        </FormText>
                     </FormGroup>
                     
                     <Button disabled={this.state.loading}
@@ -137,4 +118,4 @@ class Register extends Component
     }
 }
 
-export default withRouter(Register);
+export default withRouter(ChangeName);
