@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
 
+import "../style/index.css";
+
+import Check from './Check';
+
 class App extends Component {
   render() {
     return (
       <div>
-        <h1>React-Redux Starter Project</h1>
+        <Check />
+        
+        <div className="header" >
+          <h1>Crowd Funding Platform</h1>
+        </div>
+        
       </div>
     );
   }
