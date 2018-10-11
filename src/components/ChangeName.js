@@ -19,6 +19,20 @@ class ChangeName extends Component
         }
     }
 
+    async componentDidMount()
+    {
+        const accounts = await web3.eth.getAccounts();
+
+        const registerFlag = await CrowdFundingContract.methods
+                            .registered(accounts[0])
+                            .call();
+
+        if(!registerFlag)
+        {
+            this.props.history.push("/");
+        }
+    }
+
     onFormSubmit = async (event) =>
     {
         event.preventDefault();

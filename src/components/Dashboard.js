@@ -24,7 +24,7 @@ class Dashboard extends Component
 
         if(!registerFlag)
         {
-        this.props.history.push("/");
+            this.props.history.push("/");
         }
 
         if(this.props.user === null)

@@ -5,10 +5,10 @@ import { Button } from "reactstrap";
 
 import "../style/index.css";
 
-import Check from './Check';
-
 import web3 from '../ethereum/web3';
 import CrowdFundingContract from '../ethereum/crowdfunding';
+
+import Check from './Check';
 
 class App extends Component 
 {
@@ -17,8 +17,8 @@ class App extends Component
     const accounts = await web3.eth.getAccounts();
 
     const registerFlag = await CrowdFundingContract.methods
-                          .registered(accounts[0])
-                          .call();
+                        .registered(accounts[0])
+                        .call();
 
     if(registerFlag)
     {

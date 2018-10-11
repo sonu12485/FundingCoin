@@ -23,6 +23,16 @@ class Register extends Component
     async componentDidMount()
     {
         const accounts = await web3.eth.getAccounts();
+
+        const registerFlag = await CrowdFundingContract.methods
+                            .registered(accounts[0])
+                            .call();
+
+        if(registerFlag)
+        {
+            this.props.history.push("/dashboard");
+        }
+
         this.setState({
             account: accounts[0]
         });
