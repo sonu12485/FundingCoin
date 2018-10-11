@@ -47,7 +47,7 @@ class Register extends Component
                 from: this.state.account
             });
 
-            this.props.history.push("/");
+            this.props.history.push("/dashboard");
         }
         catch(err)
         {

@@ -17,6 +17,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import App from './components/App';
 import Register from './components/Register';
+import Dashboard from './components/Dashboard';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
@@ -27,6 +28,7 @@ ReactDOM.render(
                 <Switch>
                     <Route exact path="/" component={App} />
                     <Route exact path="/register" component={Register} />
+                    <Route exact path="/dashboard" component={Dashboard} />
                     <Redirect from="*" to={"/"} />
                 </Switch>
             </Router>
