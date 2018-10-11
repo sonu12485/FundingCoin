@@ -1,5 +1,45 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
 .header
 {
     text-align: center;
+    padding: 40px;
+    background-color: #eee;
+    color: #184372;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+}
+
+.header .heading
+{
+    font-size: 48px;
+    font-weight: 800;
+}
+
+.register-container
+{
+    text-align: center;
     padding: 20px;
+}
+
+.form-container
+{
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 20px;
+}
+
+.loading
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading img
+{
+    width: 120px;
+    height: 70px;
 }

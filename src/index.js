@@ -16,6 +16,7 @@ import reducers from './reducers';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import App from './components/App';
+import Register from './components/Register';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
@@ -25,6 +26,7 @@ ReactDOM.render(
             <Router>
                 <Switch>
                     <Route exact path="/" component={App} />
+                    <Route exact path="/register" component={Register} />
                     <Redirect from="*" to={"/"} />
                 </Switch>
             </Router>
