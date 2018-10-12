@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Badge, Button } from 'reactstrap';
+import { 
+    Badge, Button, Card, CardTitle, CardText
+} from 'reactstrap';
 
 import { connect } from "react-redux";
 
-import { getUserProfile } from '../actions/user';
+import { 
+    getUserProfile, getUserCampaigns 
+} from '../actions/user';
 
 import web3 from '../ethereum/web3';
 import CrowdFundingContract from '../ethereum/crowdfunding';
@@ -31,14 +35,42 @@ class Dashboard extends Component
                 this.props.history.push("/");
             } 
 
-            if(this.props.user === null)
-            {
-                this.props.getUserProfile();
-            }
         }
         else
         {
             this.props.history.push("/");
+        }
+
+        this.props.getUserProfile();
+
+    }
+
+    componentDidUpdate()
+    {
+        if(this.props.user && this.props.userCampaigns === null)
+        {
+            this.props.user.campaigns.forEach( address => {
+                this.props.getUserCampaigns(address);
+            });
+        }
+    }
+
+    renderCampaigns = () =>
+    {
+        if(this.props.userCampaigns !== null)
+        {
+            return this.props.userCampaigns.map( campaign => {
+                return (
+                    <Card body key={campaign.name} className="campaign-card" >
+                        <CardTitle>{campaign.name}</CardTitle>
+                        <CardText>{campaign.description}</CardText>
+                    </Card>
+                );
+            });
+        }
+        else
+        {
+            return null;
         }
     }
 
@@ -59,9 +91,8 @@ class Dashboard extends Component
                         {this.props.user?this.props.user.campaigns.length:null}
                     </Badge>
                 </div>
-                <div>
-                    <br />
-                    <br />
+                <div className="campaign-card-container" >
+                    {this.renderCampaigns()}
                 </div>
                 <div style={{textAlign: "center"}} >
                     <Button 
@@ -77,10 +108,12 @@ class Dashboard extends Component
 const mapStateToProps = (state) =>
 {
     return {
-        user: state.user
+        user: state.user,
+        userCampaigns: state.userCampaigns
     }
 }
 
 export default withRouter(connect(mapStateToProps,{
-    getUserProfile
+    getUserProfile,
+    getUserCampaigns
 })(Dashboard));

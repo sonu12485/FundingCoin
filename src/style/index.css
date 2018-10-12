@@ -63,3 +63,15 @@
     font-size: 32px;
     font-weight: 800;
 }
+
+.campaign-card
+{
+    margin: 20px;
+}
+
+.campaign-card-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
