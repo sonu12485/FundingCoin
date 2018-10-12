@@ -18,18 +18,25 @@ class Dashboard extends Component
     {
         const accounts = await web3.eth.getAccounts();
 
-        const registerFlag = await CrowdFundingContract.methods
-                            .registered(accounts[0])
-                            .call();
+        if(typeof accounts[0] !== "undefined")
+        {
+           const registerFlag = await CrowdFundingContract.methods
+                                .registered(accounts[0])
+                                .call();
 
-        if(!registerFlag)
+            if(!registerFlag)
+            {
+                this.props.history.push("/");
+            } 
+
+            if(this.props.user === null)
+            {
+                this.props.getUserProfile();
+            }
+        }
+        else
         {
             this.props.history.push("/");
-        }
-
-        if(this.props.user === null)
-        {
-            this.props.getUserProfile();
         }
     }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Button } from "reactstrap";
+import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 
 import "../style/index.css";
 
@@ -12,19 +12,51 @@ import Check from './Check';
 
 class App extends Component 
 {
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      login: true
+    }
+  }
+  
+
   async componentDidMount()
   {
     const accounts = await web3.eth.getAccounts();
 
-    const registerFlag = await CrowdFundingContract.methods
+    if(typeof accounts[0] !== "undefined")
+    {
+      const registerFlag = await CrowdFundingContract.methods
                         .registered(accounts[0])
                         .call();
 
-    if(registerFlag)
-    {
+      if(registerFlag)
+      {
       this.props.history.push("/dashboard");
+      }
     }
+    else
+    {
+      this.setState({
+        login: false
+      });
+    }
+  }
 
+  renderLoginModal = () =>
+  {
+    return (
+      <Modal isOpen={!this.state.login} backdrop={"static"}>
+      <ModalHeader>Please Login into Metamask</ModalHeader>
+      <ModalBody>
+          Please Login into the Metamask extension to use our app.
+          <br />
+          <br />
+          Refresh the page after LoggingIn.
+      </ModalBody>
+      </Modal>
+    );
   }
 
   render() 
@@ -32,6 +64,8 @@ class App extends Component
     return (
       <div>
         <Check />
+
+        {this.renderLoginModal()}
 
         <div className="header" >
           <div className="heading" >FundingCoin</div>

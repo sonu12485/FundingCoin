@@ -23,14 +23,22 @@ class ChangeName extends Component
     {
         const accounts = await web3.eth.getAccounts();
 
-        const registerFlag = await CrowdFundingContract.methods
-                            .registered(accounts[0])
-                            .call();
+        if(typeof accounts[0] !== "undefined")
+        {
+            const registerFlag = await CrowdFundingContract.methods
+                                .registered(accounts[0])
+                                .call();
 
-        if(!registerFlag)
+            if(!registerFlag)
+            {
+                this.props.history.push("/");
+            }
+        }
+        else
         {
             this.props.history.push("/");
         }
+        
     }
 
     onFormSubmit = async (event) =>

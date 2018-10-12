@@ -24,18 +24,26 @@ class Register extends Component
     {
         const accounts = await web3.eth.getAccounts();
 
-        const registerFlag = await CrowdFundingContract.methods
-                            .registered(accounts[0])
-                            .call();
-
-        if(registerFlag)
+        if(typeof accounts[0] !== "undefined")
         {
-            this.props.history.push("/dashboard");
-        }
+            const registerFlag = await CrowdFundingContract.methods
+                                .registered(accounts[0])
+                                .call();
 
-        this.setState({
-            account: accounts[0]
-        });
+            if(registerFlag)
+            {
+                this.props.history.push("/dashboard");
+            }
+
+            this.setState({
+                account: accounts[0]
+            });
+        }
+        else
+        {
+            this.props.history.push("/");
+        }
+        
     }
 
     onFormSubmit = async (event) =>
