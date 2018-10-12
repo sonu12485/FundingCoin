@@ -7,12 +7,13 @@ export function getUserProfile()
     {
         const accounts = await web3.eth.getAccounts();
 
-        const name = await CrowdFundingContract.methods.getMember(accounts[0]).call();
+        const details = await CrowdFundingContract.methods.getMember(accounts[0]).call();
 
         dispatch({
             type: "FETCH_USER_PROFILE",
             payload: {
-                name
+                name: details[0],
+                campaigns: details[1]
             }
         });
     }

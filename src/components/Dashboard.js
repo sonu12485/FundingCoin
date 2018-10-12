@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
+import { Badge, Button } from 'reactstrap';
+
 import { connect } from "react-redux";
 
 import { getUserProfile } from '../actions/user';
@@ -50,6 +52,22 @@ class Dashboard extends Component
 
                 <div className="welcome" >
                     Welcome {this.props.user?this.props.user.name:null} ,
+                </div>
+                <div className="sub-heading" >
+                    Your Campaigns&nbsp;
+                    <Badge color="primary">
+                        {this.props.user?this.props.user.campaigns.length:null}
+                    </Badge>
+                </div>
+                <div>
+                    <br />
+                    <br />
+                </div>
+                <div style={{textAlign: "center"}} >
+                    <Button 
+                        color="primary"
+                        onClick = { () => this.props.history.push("/create") }
+                    >Start a Campaign</Button>
                 </div>
             </div>
         );

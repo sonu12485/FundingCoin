@@ -53,3 +53,13 @@
     font-size: 24px;
     font-weight: 600;
 }
+
+.sub-heading
+{
+    text-align: center;
+    padding: 10px;
+    color: #184372;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+}

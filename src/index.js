@@ -19,6 +19,7 @@ import App from './components/App';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import ChangeName from './components/ChangeName';
+import Create from './components/Create';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
@@ -31,6 +32,7 @@ ReactDOM.render(
                     <Route exact path="/register" component={Register} />
                     <Route exact path="/dashboard" component={Dashboard} />
                     <Route exact path="/change/name" component={ChangeName} />
+                    <Route exact path="/create" component={Create} />
                     <Redirect from="*" to={"/"} />
                 </Switch>
             </Router>
