@@ -7,6 +7,8 @@ import {
     NavbarToggler,
     NavbarBrand,
     Nav,
+    NavItem,
+    NavLink,
     UncontrolledDropdown,
     DropdownToggle,
     DropdownMenu,
@@ -39,6 +41,12 @@ class Topnav extends Component
                 <NavbarToggler onClick={this.toggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav className="ml-auto" navbar>
+                    <NavItem>
+                        <NavLink href="/dashboard">DashBoard</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink href="/home">Home</NavLink>
+                    </NavItem>
                     <UncontrolledDropdown nav inNavbar>
                         <DropdownToggle nav caret>
                         Profile
