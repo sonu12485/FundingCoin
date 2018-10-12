@@ -55,7 +55,6 @@ class ChangeName extends Component
             const accounts = await web3.eth.getAccounts();
 
             await CrowdFundingContract.methods.changeMemberDetails(
-                accounts[0],
                 this.state.name
             )
             .send({

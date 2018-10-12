@@ -58,8 +58,7 @@ class Register extends Component
         try
         {
             await CrowdFundingContract.methods.register(
-                this.state.name,
-                this.state.account
+                this.state.name
             )
             .send({
                 from: this.state.account

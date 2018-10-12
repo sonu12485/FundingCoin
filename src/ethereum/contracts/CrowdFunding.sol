@@ -21,18 +21,18 @@ contract CrowdFunding
         _;
     }
 
-    function register(string _name, address _account) public 
+    function register(string _name) public 
     {
-        require(!registered[_account]);
+        require(!registered[msg.sender]);
         
         Member memory newMember = Member({
            name: _name,
-           account: _account,
+           account: msg.sender,
            campaigns: new address[](0)
         });
         
-        accountToMember[_account] = newMember;
-        registered[_account] = true;
+        accountToMember[msg.sender] = newMember;
+        registered[msg.sender] = true;
     }
     
     function getMember(address _account) 
@@ -48,9 +48,9 @@ contract CrowdFunding
         );
     }
     
-    function changeMemberDetails(address _account, string _name) public registeredMember(_account)
+    function changeMemberDetails(string _name) public registeredMember(msg.sender)
     {
-        Member storage member = accountToMember[_account];
+        Member storage member = accountToMember[msg.sender];
         
         member.name = _name;
     }
