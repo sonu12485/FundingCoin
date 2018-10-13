@@ -93,3 +93,8 @@
     line-height: 200%;
     word-break: break-all;
 }
+
+.hoverable:hover
+{
+    color: #007BFF;
+}

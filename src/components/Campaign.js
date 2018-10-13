@@ -93,7 +93,12 @@ class Campaign extends Component
                         Campaign Balance - {
                             web3.utils.fromWei(this.state.campaign.balance, "ether")
                         } ether<br />
-                        Manager - <span>{this.state.campaign.manager}</span>
+                        Manager - <span
+                            className="hoverable"
+                            onClick={ () => this.props.history.push(
+                                `/member/${this.state.campaign.manager}`
+                            )}
+                        >{this.state.campaign.manager}</span>
                     </div>
                 </div>
             );
