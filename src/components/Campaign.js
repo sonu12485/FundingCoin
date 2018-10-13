@@ -287,6 +287,34 @@ class Campaign extends Component
         }
     }
 
+    renderSpendingRequests = () =>
+    {
+        if(this.state.campaign)
+        {
+            return (
+                <div
+                    style={{
+                        textAlign: "center",
+                        paddingBottom: 20
+                    }}
+                >
+                    <Button
+                        color="primary"
+                        onClick={ () => this.props.history.push(
+                            `/request/${this.props.match.params.address}`
+                        )}
+                    >
+                        Spending Requests
+                    </Button>
+                </div>
+            );
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     render() 
     {
         return (
@@ -301,6 +329,9 @@ class Campaign extends Component
 
                 {this.renderContributors()}
 
+                {this.renderSpendingRequests()}
+
+                <br /><br /><br /><br /><br /><br /><br /><br />
             </div>
         );
     }

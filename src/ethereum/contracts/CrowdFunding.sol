@@ -184,4 +184,9 @@ contract Campaign
         
         requests.push(newRequest);
     }
+    
+    function getRequestCount() public view returns(uint)
+    {
+        return requests.length;
+    }
 }
