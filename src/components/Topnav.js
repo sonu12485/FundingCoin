@@ -37,15 +37,21 @@ class Topnav extends Component
         return (
             <div>
             <Navbar color="light" light expand="md">
-                <NavbarBrand href="/dashboard">FundingCoin</NavbarBrand>
+                <NavbarBrand
+                    onClick={ () => this.props.history.push("/dashboard")}
+                >FundingCoin</NavbarBrand>
                 <NavbarToggler onClick={this.toggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav className="ml-auto" navbar>
                     <NavItem>
-                        <NavLink href="/dashboard">DashBoard</NavLink>
+                        <NavLink
+                            onClick={ () => this.props.history.push("/dashboard")}
+                        >DashBoard</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink href="/home">Home</NavLink>
+                        <NavLink 
+                            onClick={ () => this.props.history.push("/home")}
+                        >Home</NavLink>
                     </NavItem>
                     <UncontrolledDropdown nav inNavbar>
                         <DropdownToggle nav caret>

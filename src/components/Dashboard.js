@@ -59,9 +59,16 @@ class Dashboard extends Component
     {
         if(this.props.userCampaigns !== null)
         {
-            return this.props.userCampaigns.map( campaign => {
+            return this.props.userCampaigns.map( (campaign,index) => {
                 return (
-                    <Card body key={campaign.name} className="campaign-card" >
+                    <Card 
+                        body 
+                        key={campaign.name} 
+                        className="campaign-card" 
+                        onClick={ () => this.props.history.push(
+                            `/campaign/${this.props.user.campaigns[index]}`
+                        )}
+                    >
                         <CardTitle>{campaign.name}</CardTitle>
                         <CardText>{campaign.description}</CardText>
                     </Card>

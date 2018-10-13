@@ -21,6 +21,7 @@ import Dashboard from './components/Dashboard';
 import ChangeName from './components/ChangeName';
 import Create from './components/Create';
 import Home from './components/Home';
+import Campaign from './components/Campaign';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
@@ -35,6 +36,7 @@ ReactDOM.render(
                     <Route exact path="/change/name" component={ChangeName} />
                     <Route exact path="/create" component={Create} />
                     <Route exact path="/home" component={Home} />
+                    <Route exact path="/campaign/:address" component={Campaign} />
                     <Redirect from="*" to={"/"} />
                 </Switch>
             </Router>

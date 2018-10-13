@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { 
-    Badge, Button, Card, CardTitle, CardText
+    Badge, Card, CardTitle, CardText
 } from 'reactstrap';
 
 import { connect } from "react-redux";
@@ -57,9 +57,16 @@ class Home extends Component
     {
         if(this.props.allCampaigns !== null)
         {
-            return this.props.allCampaigns.map( campaign => {
+            return this.props.allCampaigns.map( (campaign,index) => {
                 return (
-                    <Card body key={campaign.name} className="campaign-card" >
+                    <Card 
+                        body 
+                        key={campaign.name} 
+                        className="campaign-card" 
+                        onClick={ () => this.props.history.push(
+                            `/campaign/${this.props.allCampaignAddress[index]}`
+                        )}
+                    >
                         <CardTitle>{campaign.name}</CardTitle>
                         <CardText>{campaign.description}</CardText>
                     </Card>
