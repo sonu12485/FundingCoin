@@ -97,6 +97,18 @@ contract CrowdFunding
 
 contract Campaign
 {
+    struct Request
+    {
+        string name;
+        string description;
+        uint value;
+        address recipient;
+        bool complete;
+        
+        mapping(address => bool) approvals;
+        uint approvalCount;
+    }
+    
     string public name;
     string public description;
     uint public mimimunContribution;
@@ -107,6 +119,8 @@ contract Campaign
     address[] public contributors;
     uint contributorsCount;
     mapping(address => bool) public isContributor;
+    
+    Request[] public requests;
     
     constructor(
         address _manager, string _name, string _description, uint _min,string _startDate
@@ -147,5 +161,27 @@ contract Campaign
         contributors.push(msg.sender);
         isContributor[msg.sender] = true;
         contributorsCount++;
+    }
+    
+    modifier onlyManager(address _address)
+    {
+        require(_address == manager);
+        _;
+    }
+    
+    function createRequest(
+        string _name, string _description, uint _value, address _recipient
+    ) public onlyManager(msg.sender) 
+    {
+        Request memory newRequest = Request({
+            name: _name,
+            description: _description,
+            value: _value,
+            recipient: _recipient,
+            complete: false,
+            approvalCount: 0
+        });
+        
+        requests.push(newRequest);
     }
 }
