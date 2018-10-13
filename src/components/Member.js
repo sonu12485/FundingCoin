@@ -50,7 +50,8 @@ class Member extends Component
             this.setState({
                 member: {
                     name: details[0],
-                    campaigns: details[1]
+                    campaigns: details[1],
+                    contributedCampaigns: details[2]
                 }
             });
             
@@ -72,12 +73,40 @@ class Member extends Component
                         <div className="heading" >{this.state.member.name}</div>
                     </div>
                     <div className="description" >
-                        <div style={{textAlign: "center"}} >
-                            Campaigns
+                        <div style={{textAlign: "center", fontWeight: 800}} >
+                            Campaigns&nbsp;
+                            <Badge color="primary">
+                                {this.state.member.campaigns.length}
+                            </Badge>
                         </div>
                         <ul>
                         {
                             this.state.member.campaigns.map( campaign => {
+                                return (
+                                    <li 
+                                        className="hoverable"
+                                        key={campaign} 
+                                        onClick={ () => this.props.history.push(
+                                            `/campaign/${campaign}`
+                                        ) }
+                                    >
+                                        {campaign}
+                                    </li>
+                                );
+                            })
+                        }
+                        </ul>
+                    </div>
+                    <div className="description" >
+                        <div style={{textAlign: "center", fontWeight: 800}} >
+                            Contributions&nbsp;
+                            <Badge color="primary">
+                                {this.state.member.contributedCampaigns.length}
+                            </Badge>
+                        </div>
+                        <ul>
+                        {
+                            this.state.member.contributedCampaigns.map( campaign => {
                                 return (
                                     <li 
                                         className="hoverable"

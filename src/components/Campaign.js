@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Badge } from 'reactstrap';
+import { Badge, Button, Form, FormGroup, FormText, Input, Alert } from 'reactstrap';
 
 import web3 from '../ethereum/web3';
 import CrowdFundingContract from '../ethereum/crowdfunding';
@@ -16,7 +16,12 @@ class Campaign extends Component
         super(props);
         
         this.state = {
-            campaign: null
+            campaign: null,
+            hasContributed: false,
+            isManager: false,
+            amount: '',
+            loading: false,
+            error: ""
         }
     }
     
@@ -49,6 +54,12 @@ class Campaign extends Component
 
             const summary = await CampaignContract.methods.getSummary().call();
 
+            const hasContributed = await CampaignContract.methods.isContributor(
+                accounts[0]
+            ).call();
+
+            const isManager = summary[5] === accounts[0];
+
             this.setState({
                 campaign: {
                     name: summary[0],
@@ -57,8 +68,12 @@ class Campaign extends Component
                     startDate: summary[3],
                     active: summary[4],
                     manager: summary[5],
-                    balance: summary[6]
-                }
+                    balance: summary[6],
+                    contributors: summary[7],
+                    contributorsCount: summary[8]
+                },
+                hasContributed,
+                isManager
             });
         }
         catch(err)
@@ -109,6 +124,169 @@ class Campaign extends Component
         }
     }
 
+    onContribute = async (event) =>
+    {
+        event.preventDefault();
+
+        this.setState({
+            error: "",
+            loading: true
+        });
+
+        try
+        {
+            const accounts = await web3.eth.getAccounts();
+
+            await CrowdFundingContract.methods.contribute(
+                this.props.match.params.address
+            ).send({
+                from: accounts[0]
+            });
+
+            const CampaignContract = CampaignContractGenerator(
+                this.props.match.params.address
+            );
+
+            await CampaignContract.methods.contribute().send({
+                from: accounts[0],
+                value: web3.utils.toWei(this.state.amount, "ether")
+            });
+
+            window.location.reload();
+        }
+        catch(err)
+        {
+            this.setState({
+                loading: false,
+                error: err.message
+            });
+        }
+
+        this.setState({ loading: false });
+    }
+
+    renderContributeForm = () =>
+    {
+        if(this.state.campaign)
+        {
+            if(!this.state.hasContributed && !this.state.isManager)
+            {
+                console.log(this.state);
+
+                return (
+                    <div>
+                    <div className="description" >
+                        Be a Part of this Campaign -
+                        <Form onSubmit={this.onContribute} >
+                        <FormGroup>
+                            <Input 
+                                type="number" 
+                                name="amount" 
+                                placeholder="Enter Amount of ether you want to Contribute" 
+                                value={this.state.amount}
+                                onChange={ (event) => {
+                                    this.setState({
+                                        amount: event.target.value
+                                    })
+                                }}
+                            />
+                        </FormGroup>
+
+                        <FormText color="muted" style={{fontSize: 14}} >
+                            This will issue two transactions.Please accept both to contribute.
+                        </FormText>
+
+                        <Button
+                            color="primary"
+                            disabled={ 
+                                this.state.amount < web3.utils.fromWei(this.state.campaign.min, "ether") 
+                                ||
+                                this.state.loading
+                            }
+                        >Contribute</Button>
+                        </Form>
+                    </div>
+                    <div>
+                    {
+                        this.state.loading 
+                        ?
+                        <div className="loading">
+                            <img src="/img/loading.gif" alt="loading" />
+                            <br />
+                            <Alert color="primary">
+                                Please Wait while your transaction is being processed!!
+                            </Alert>
+                        </div>
+                        :
+                        null
+                    }
+                    {
+                        !!this.state.error 
+                        ?
+                        <div className="loading">
+                            <br />
+                            <Alert color="danger">
+                                {this.state.error}
+                            </Alert>
+                        </div>
+                        :
+                        null
+                    }
+                    </div>
+                    </div>
+                );
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    renderContributors = () =>
+    {
+        if(this.state.campaign)
+        {
+            return (
+                <div>
+                    <div className="description" >
+                        <div style={{textAlign: "center", fontWeight: 800}} >
+                            Contributors&nbsp;
+                            <Badge color="primary">
+                                {this.state.campaign.contributorsCount}
+                            </Badge>
+                        </div>
+                        <ul>
+                        {
+                            this.state.campaign.contributors.map( contributor => {
+                                return (
+                                    <li 
+                                        className="hoverable"
+                                        key={contributor} 
+                                        onClick={ () => this.props.history.push(
+                                            `/member/${contributor}`
+                                        ) }
+                                    >
+                                        {contributor}
+                                    </li>
+                                );
+                            })
+                        }
+                        </ul>
+                    </div>
+                </div>
+            );
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     render() 
     {
         return (
@@ -118,6 +296,10 @@ class Campaign extends Component
                 <Topnav />
 
                 {this.renderCampaign()}
+
+                {this.renderContributeForm()}
+
+                {this.renderContributors()}
 
             </div>
         );

@@ -61,6 +61,7 @@ class Check extends Component
                     <a 
                         href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" 
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         Install Metamask
                     </a>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
+import web3 from '../ethereum/web3';
+
 import {
     Collapse,
     Navbar,
@@ -21,7 +23,8 @@ class Topnav extends Component
         super(props);
         
         this.state = {
-            isOpen: false
+            isOpen: false,
+            address: null
         }
     }
     
@@ -29,6 +32,15 @@ class Topnav extends Component
     {
         this.setState({
             isOpen: !this.state.isOpen
+        });
+    }
+
+    async componentDidMount()
+    {
+        const accounts = await web3.eth.getAccounts();
+
+        this.setState({
+            address: accounts[0]
         });
     }
 
@@ -58,9 +70,18 @@ class Topnav extends Component
                         Profile
                         </DropdownToggle>
                         <DropdownMenu right>
-                            <DropdownItem>
-                                View Profile
-                            </DropdownItem>
+                            {
+                                this.state.address
+                                ?
+                                <DropdownItem
+                                    onClick={ () => this.props.history.push(
+                                        `/member/${this.state.address}`
+                                    ) }
+                                >
+                                    View Profile
+                                </DropdownItem>
+                                :null
+                            }
                             <DropdownItem divider />
                             <DropdownItem onClick={ () => {
                                 this.props.history.push("/change/name")

@@ -81,6 +81,41 @@ class Dashboard extends Component
         }
     }
 
+    renderContributions = () =>
+    {
+        if(this.props.user !== null)
+        {
+            return (
+                <ul
+                    style={{
+                        fontSize: 24,
+                        margin: 20
+                    }}
+                >
+                {
+                    this.props.user.contributedCampaigns.map( campaign => {
+                        return (
+                            <li 
+                                className="hoverable"
+                                key={campaign} 
+                                onClick={ () => this.props.history.push(
+                                    `/campaign/${campaign}`
+                                ) }
+                            >
+                                {campaign}
+                            </li>
+                        );
+                    })
+                }
+                </ul>
+            );
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     render() 
     {
         return (
@@ -106,6 +141,18 @@ class Dashboard extends Component
                         color="primary"
                         onClick = { () => this.props.history.push("/create") }
                     >Start a Campaign</Button>
+                </div>
+                <br />
+                <hr />
+                <br />
+                <div className="sub-heading" >
+                    Your Contributions&nbsp;
+                    <Badge color="primary">
+                        {this.props.user?this.props.user.contributedCampaigns.length:null}
+                    </Badge>
+                </div>
+                <div className="campaign-card-container" >
+                    {this.renderContributions()}
                 </div>
             </div>
         );

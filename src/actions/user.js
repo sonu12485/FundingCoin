@@ -14,7 +14,8 @@ export function getUserProfile()
             type: "FETCH_USER_PROFILE",
             payload: {
                 name: details[0],
-                campaigns: details[1]
+                campaigns: details[1],
+                contributedCampaigns: details[2]
             }
         });
     }
