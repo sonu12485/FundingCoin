@@ -41,23 +41,31 @@ class Campaign extends Component
             this.props.history.push("/");
         }
 
-        const CampaignContract = CampaignContractGenerator(
-            this.props.match.params.address
-        );
-        
-        const summary = await CampaignContract.methods.getSummary().call();
+        try
+        {
+            const CampaignContract = CampaignContractGenerator(
+                this.props.match.params.address
+            );
 
-        this.setState({
-            campaign: {
-                name: summary[0],
-                description: summary[1],
-                min: summary[2],
-                startDate: summary[3],
-                active: summary[4],
-                manager: summary[5],
-                balance: summary[6]
-            }
-        });
+            const summary = await CampaignContract.methods.getSummary().call();
+
+            this.setState({
+                campaign: {
+                    name: summary[0],
+                    description: summary[1],
+                    min: summary[2],
+                    startDate: summary[3],
+                    active: summary[4],
+                    manager: summary[5],
+                    balance: summary[6]
+                }
+            });
+        }
+        catch(err)
+        {
+            this.props.history.push("/");
+        }
+        
     }
 
     renderCampaign = () =>
