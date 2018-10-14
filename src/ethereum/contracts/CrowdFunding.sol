@@ -105,6 +105,7 @@ contract Campaign
         address recipient;
         bool complete;
         
+        address[] approvers;
         mapping(address => bool) approvals;
         uint approvalCount;
     }
@@ -179,10 +180,23 @@ contract Campaign
             value: _value,
             recipient: _recipient,
             complete: false,
+            approvers: new address[](0),
             approvalCount: 0
         });
         
         requests.push(newRequest);
+    }
+    
+    function getRequest(uint _index) public view returns(
+        string, string, uint, address, bool, address[], uint    
+    )
+    {
+        Request memory request = requests[_index];
+        
+        return (
+            request.name, request.description, request.value, request.recipient,
+            request.complete, request.approvers, request.approvalCount
+        );
     }
     
     function getRequestCount() public view returns(uint)
@@ -199,6 +213,7 @@ contract Campaign
         require(!request.approvals[msg.sender]);
         require(!request.complete);
         
+        request.approvers.push(msg.sender);
         request.approvals[msg.sender] = true;
         request.approvalCount++;
     }

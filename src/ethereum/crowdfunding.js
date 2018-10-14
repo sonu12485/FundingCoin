@@ -3,7 +3,7 @@ import compiledContract from './build/CrowdFunding.json';
 
 const ContractInstance = new web3.eth.Contract(
     JSON.parse(compiledContract.interface),
-    "0x77e7431e4d0e1bbea56a530f6dd39f4b85f4b490"
+    "0x69b175f2b5620f11709b1821b168cdda49795975"
 );
 
 export default ContractInstance;
