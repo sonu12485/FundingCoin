@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Badge, Button } from 'reactstrap';
+import { 
+    Badge, Button, Card, CardText, CardTitle
+} from 'reactstrap';
 
 import web3 from '../ethereum/web3';
 import CrowdFundingContract from '../ethereum/crowdfunding';
@@ -17,7 +19,8 @@ class Request extends Component
         
         this.state = {
             requestCount: null,
-            isManager: null
+            isManager: null,
+            requests: null
         }
     }
 
@@ -54,9 +57,20 @@ class Request extends Component
 
             const isManager = summary[5] === accounts[0];
 
+            let requests;
+
+            requests = await Promise.all(
+                Array( Number(requestCount) )
+                    .fill()
+                    .map( (element, index) => {
+                        return CampaignContract.methods.requests(index).call();
+                    })
+            );
+
             this.setState({
                 requestCount,
-                isManager
+                isManager,
+                requests
             });
         }
         catch(err)
@@ -87,6 +101,42 @@ class Request extends Component
         }
     }
 
+    renderRequests = () =>
+    {
+        if(this.state.requests)
+        {
+            return this.state.requests.map( request => {
+                return (
+                    <Card 
+                        body 
+                        outline
+                        color={ request.complete?"secondary":"primary" }
+                        key={request.name} 
+                        className="request-card" 
+                    >
+                        <CardTitle>{request.name}</CardTitle>
+                        <CardText>
+                            {request.description}
+                            <br />
+                            Amount of ether to be spent - {
+                                web3.utils.fromWei(request.value, "ether")
+                            } ether
+                            <br />
+                            Recipient address - {request.recipient}
+                            <br />
+                            Number of Approvals - {request.approvalCount}
+                            <br />
+                        </CardText>
+                    </Card>
+                );
+            });
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     render() 
     {
         return (
@@ -101,6 +151,10 @@ class Request extends Component
                         <Badge color="primary">
                             {this.state.requestCount?this.state.requestCount:null}
                         </Badge>
+                    </div>
+
+                    <div>
+                        {this.renderRequests()}
                     </div>
 
                     <div>
