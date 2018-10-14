@@ -189,4 +189,17 @@ contract Campaign
     {
         return requests.length;
     }
+    
+    function approveRequest(uint _index) public 
+    {
+        require(isContributor[msg.sender]);
+        
+        Request storage request = requests[_index];
+        
+        require(!request.approvals[msg.sender]);
+        require(!request.complete);
+        
+        request.approvals[msg.sender] = true;
+        request.approvalCount++;
+    }
 }
