@@ -217,4 +217,15 @@ contract Campaign
         request.approvals[msg.sender] = true;
         request.approvalCount++;
     }
+    
+    function finalizeRequest(uint _index) public onlyManager(msg.sender)
+    {
+        Request storage request = requests[_index];
+        
+        require( request.approvalCount > (contributorsCount/2) );
+        require(!request.complete);
+        
+        request.recipient.transfer(request.value);
+        request.complete = true;
+    }
 }
