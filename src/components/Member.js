@@ -21,46 +21,52 @@ class Member extends Component
     
     async componentDidMount()
     {
-        const accounts = await web3.eth.getAccounts();
-
-        if(typeof accounts[0] !== "undefined")
+        if(web3 !== 0)
         {
-           const registerFlag = await CrowdFundingContract.methods
-                                .registered(accounts[0])
-                                .call();
+            const accounts = await web3.eth.getAccounts();
 
-            if(!registerFlag)
+            if(typeof accounts[0] !== "undefined")
+            {
+            const registerFlag = await CrowdFundingContract.methods
+                                    .registered(accounts[0])
+                                    .call();
+
+                if(!registerFlag)
+                {
+                    this.props.history.push("/");
+                } 
+
+            }
+            else
             {
                 this.props.history.push("/");
-            } 
+            }
 
+            try
+            {
+                const account = this.props.match.params.address;
+
+                const details = await CrowdFundingContract.methods
+                                .getMember(account).call();
+
+                this.setState({
+                    member: {
+                        name: details[0],
+                        campaigns: details[1],
+                        contributedCampaigns: details[2]
+                    }
+                });
+                
+            }
+            catch(err)
+            {
+                this.props.history.push("/");
+            }
         }
         else
         {
-            this.props.history.push("/");
+            window.location.assign("/");
         }
-
-        try
-        {
-            const account = this.props.match.params.address;
-
-            const details = await CrowdFundingContract.methods
-                            .getMember(account).call();
-
-            this.setState({
-                member: {
-                    name: details[0],
-                    campaigns: details[1],
-                    contributedCampaigns: details[2]
-                }
-            });
-            
-        }
-        catch(err)
-        {
-            this.props.history.push("/");
-        }
-        
     }
 
     renderMember = () =>

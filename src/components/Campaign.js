@@ -27,60 +27,66 @@ class Campaign extends Component
     
     async componentDidMount()
     {
-        const accounts = await web3.eth.getAccounts();
-
-        if(typeof accounts[0] !== "undefined")
+        if(web3 !== 0)
         {
-           const registerFlag = await CrowdFundingContract.methods
-                                .registered(accounts[0])
-                                .call();
+            const accounts = await web3.eth.getAccounts();
 
-            if(!registerFlag)
+            if(typeof accounts[0] !== "undefined")
+            {
+            const registerFlag = await CrowdFundingContract.methods
+                                    .registered(accounts[0])
+                                    .call();
+
+                if(!registerFlag)
+                {
+                    this.props.history.push("/");
+                } 
+
+            }
+            else
             {
                 this.props.history.push("/");
-            } 
+            }
 
+            try
+            {
+                const CampaignContract = CampaignContractGenerator(
+                    this.props.match.params.address
+                );
+
+                const summary = await CampaignContract.methods.getSummary().call();
+
+                const hasContributed = await CampaignContract.methods.isContributor(
+                    accounts[0]
+                ).call();
+
+                const isManager = summary[5] === accounts[0];
+
+                this.setState({
+                    campaign: {
+                        name: summary[0],
+                        description: summary[1],
+                        min: summary[2],
+                        startDate: summary[3],
+                        active: summary[4],
+                        manager: summary[5],
+                        balance: summary[6],
+                        contributors: summary[7],
+                        contributorsCount: summary[8]
+                    },
+                    hasContributed,
+                    isManager
+                });
+            }
+            catch(err)
+            {
+                this.props.history.push("/");
+            }
         }
         else
         {
-            this.props.history.push("/");
+            window.location.assign('/');
         }
-
-        try
-        {
-            const CampaignContract = CampaignContractGenerator(
-                this.props.match.params.address
-            );
-
-            const summary = await CampaignContract.methods.getSummary().call();
-
-            const hasContributed = await CampaignContract.methods.isContributor(
-                accounts[0]
-            ).call();
-
-            const isManager = summary[5] === accounts[0];
-
-            this.setState({
-                campaign: {
-                    name: summary[0],
-                    description: summary[1],
-                    min: summary[2],
-                    startDate: summary[3],
-                    active: summary[4],
-                    manager: summary[5],
-                    balance: summary[6],
-                    contributors: summary[7],
-                    contributorsCount: summary[8]
-                },
-                hasContributed,
-                isManager
-            });
-        }
-        catch(err)
-        {
-            this.props.history.push("/");
-        }
-        
     }
 
     renderCampaign = () =>

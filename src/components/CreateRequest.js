@@ -25,45 +25,51 @@ class CreateRequest extends Component
 
     async componentDidMount()
     {
-        const accounts = await web3.eth.getAccounts();
-
-        if(typeof accounts[0] !== "undefined")
+        if(web3 !== 0)
         {
-            const registerFlag = await CrowdFundingContract.methods
-                                .registered(accounts[0])
-                                .call();
+            const accounts = await web3.eth.getAccounts();
 
-            if(!registerFlag)
+            if(typeof accounts[0] !== "undefined")
+            {
+                const registerFlag = await CrowdFundingContract.methods
+                                    .registered(accounts[0])
+                                    .call();
+
+                if(!registerFlag)
+                {
+                    this.props.history.push("/");
+                }
+            }
+            else
+            {
+                this.props.history.push("/");
+            }
+
+            try
+            {
+                const CampaignContract = CampaignContractGenerator(
+                    this.props.match.params.address
+                );
+
+                const summary = await CampaignContract.methods.getSummary().call();
+
+                const isManager = summary[5] === accounts[0];
+                const contributorCount = summary[8];
+
+                if(!isManager || Number(contributorCount) === 0 )
+                {
+                    this.props.history.push("/");
+                }
+            }
+            catch(err)
             {
                 this.props.history.push("/");
             }
         }
         else
         {
-            this.props.history.push("/");
+            window.location.assign("/");
         }
-
-        try
-        {
-            const CampaignContract = CampaignContractGenerator(
-                this.props.match.params.address
-            );
-
-            const summary = await CampaignContract.methods.getSummary().call();
-
-            const isManager = summary[5] === accounts[0];
-            const contributorCount = summary[8];
-
-            if(!isManager || Number(contributorCount) === 0 )
-            {
-                this.props.history.push("/");
-            }
-        }
-        catch(err)
-        {
-            this.props.history.push("/");
-        }
-        
     }
 
     onFormSubmit = async (event) =>

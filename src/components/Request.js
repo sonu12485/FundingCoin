@@ -31,78 +31,84 @@ class Request extends Component
 
     async componentDidMount()
     {
-        const accounts = await web3.eth.getAccounts();
-
-        if(typeof accounts[0] !== "undefined")
+        if(web3 !== 0)
         {
-           const registerFlag = await CrowdFundingContract.methods
-                                .registered(accounts[0])
-                                .call();
+            const accounts = await web3.eth.getAccounts();
 
-            if(!registerFlag)
+            if(typeof accounts[0] !== "undefined")
+            {
+            const registerFlag = await CrowdFundingContract.methods
+                                    .registered(accounts[0])
+                                    .call();
+
+                if(!registerFlag)
+                {
+                    this.props.history.push("/");
+                } 
+
+            }
+            else
             {
                 this.props.history.push("/");
-            } 
+            }
 
+            try
+            {
+                const CampaignContract = CampaignContractGenerator(
+                    this.props.match.params.address
+                );
+
+                const requestCount = await CampaignContract.methods.getRequestCount().call();
+
+                const summary = await CampaignContract.methods.getSummary().call();
+
+                const hasContributed = await CampaignContract.methods.isContributor(
+                    accounts[0]
+                ).call();
+
+                const isManager = summary[5] === accounts[0];
+                const contributorsCount = summary[8];
+
+                let requests;
+
+                requests = await Promise.all(
+                    Array( Number(requestCount) )
+                        .fill()
+                        .map( (element, index) => {
+                            return CampaignContract.methods.getRequest(index).call();
+                        })
+                );
+
+                const processedRequests = requests.map( request => {
+                    return {
+                        name: request[0],
+                        description: request[1],
+                        value: request[2],
+                        recipient: request[3],
+                        complete: request[4],
+                        approvers: request[5],
+                        approvalCount: request[6]
+                    }
+                });
+
+                this.setState({
+                    requestCount,
+                    isManager,
+                    requests: processedRequests,
+                    contributorsCount,
+                    hasContributed,
+                    account: accounts[0]
+                });
+            }
+            catch(err)
+            {
+                this.props.history.push("/");
+            }
         }
         else
         {
-            this.props.history.push("/");
+            window.location.assign("/");
         }
-
-        try
-        {
-            const CampaignContract = CampaignContractGenerator(
-                this.props.match.params.address
-            );
-
-            const requestCount = await CampaignContract.methods.getRequestCount().call();
-
-            const summary = await CampaignContract.methods.getSummary().call();
-
-            const hasContributed = await CampaignContract.methods.isContributor(
-                accounts[0]
-            ).call();
-
-            const isManager = summary[5] === accounts[0];
-            const contributorsCount = summary[8];
-
-            let requests;
-
-            requests = await Promise.all(
-                Array( Number(requestCount) )
-                    .fill()
-                    .map( (element, index) => {
-                        return CampaignContract.methods.getRequest(index).call();
-                    })
-            );
-
-            const processedRequests = requests.map( request => {
-                return {
-                    name: request[0],
-                    description: request[1],
-                    value: request[2],
-                    recipient: request[3],
-                    complete: request[4],
-                    approvers: request[5],
-                    approvalCount: request[6]
-                }
-            });
-
-            this.setState({
-                requestCount,
-                isManager,
-                requests: processedRequests,
-                contributorsCount,
-                hasContributed,
-                account: accounts[0]
-            });
-        }
-        catch(err)
-        {
-            this.props.history.push("/");
-        }
-
     }
 
     renderCreateSpendingRequestBtn = () =>

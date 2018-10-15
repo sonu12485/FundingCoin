@@ -37,11 +37,18 @@ class Topnav extends Component
 
     async componentDidMount()
     {
-        const accounts = await web3.eth.getAccounts();
+        if(web3 !== 0)
+        {
+            const accounts = await web3.eth.getAccounts();
 
-        this.setState({
-            address: accounts[0]
-        });
+            this.setState({
+                address: accounts[0]
+            });
+        }
+        else
+        {
+            window.location.assign("/");
+        }
     }
 
     render() 

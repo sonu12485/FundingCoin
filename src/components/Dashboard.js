@@ -22,27 +22,33 @@ class Dashboard extends Component
 
     async componentDidMount()
     {
-        const accounts = await web3.eth.getAccounts();
-
-        if(typeof accounts[0] !== "undefined")
+        if(web3 !== 0)
         {
-           const registerFlag = await CrowdFundingContract.methods
-                                .registered(accounts[0])
-                                .call();
+            const accounts = await web3.eth.getAccounts();
 
-            if(!registerFlag)
+            if(typeof accounts[0] !== "undefined")
+            {
+            const registerFlag = await CrowdFundingContract.methods
+                                    .registered(accounts[0])
+                                    .call();
+
+                if(!registerFlag)
+                {
+                    this.props.history.push("/");
+                } 
+
+            }
+            else
             {
                 this.props.history.push("/");
-            } 
+            }
 
+            this.props.getUserProfile();
         }
         else
         {
-            this.props.history.push("/");
+            window.location.assign("/");
         }
-
-        this.props.getUserProfile();
-
     }
 
     componentDidUpdate()
