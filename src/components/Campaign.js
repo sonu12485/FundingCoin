@@ -171,8 +171,6 @@ class Campaign extends Component
         {
             if(!this.state.hasContributed && !this.state.isManager)
             {
-                console.log(this.state);
-
                 return (
                     <div>
                     <div className="description" >

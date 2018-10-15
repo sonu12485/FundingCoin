@@ -174,6 +174,8 @@ contract Campaign
         string _name, string _description, uint _value, address _recipient
     ) public onlyManager(msg.sender) 
     {
+        require(contributorsCount > 0);
+        
         Request memory newRequest = Request({
             name: _name,
             description: _description,

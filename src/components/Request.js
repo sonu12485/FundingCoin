@@ -107,7 +107,7 @@ class Request extends Component
 
     renderCreateSpendingRequestBtn = () =>
     {
-        if(this.state.isManager)
+        if(this.state.isManager && this.state.contributorsCount > 0 )
         {
             return (
                 <div style={{textAlign: "center", padding: 10}} >

@@ -52,8 +52,9 @@ class CreateRequest extends Component
             const summary = await CampaignContract.methods.getSummary().call();
 
             const isManager = summary[5] === accounts[0];
+            const contributorCount = summary[8];
 
-            if(!isManager)
+            if(!isManager || Number(contributorCount) === 0 )
             {
                 this.props.history.push("/");
             }
