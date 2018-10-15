@@ -234,6 +234,107 @@ class Request extends Component
         }
     }
 
+    onFinalize = async (index) =>
+    {
+        this.setState({
+            error: "",
+            loading: true
+        });
+
+        try
+        {
+            const CampaignContract = CampaignContractGenerator(
+                this.props.match.params.address
+            );
+
+            await CampaignContract.methods
+                    .finalizeRequest(index)
+                    .send({
+                        from: this.state.account
+                    });
+
+            window.location.reload();
+        }
+        catch(err)
+        {
+            this.setState({
+                loading: false,
+                error: err.message
+            });
+        }
+
+        this.setState({ loading: false });
+    }
+
+    renderFinalizeBtn = (index) =>
+    {
+        if(this.state.requests)
+        {
+            const request = this.state.requests[index];
+
+            if(
+                this.state.isManager 
+                && 
+                !request.complete 
+                &&
+                (request.approvalCount >= (Math.round(this.state.contributorsCount/2)))
+            )
+            {
+                return (
+                    <div>
+                        <br /><br />
+                        <Button 
+                            color="success" 
+                            disabled={this.state.loading}
+                            onClick={ () => this.onFinalize(index) }
+                        >
+                            Finalize
+                        </Button>
+                    </div>
+                );
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    renderStatus = (index) =>
+    {
+        if(this.state.requests)
+        {
+            const request = this.state.requests[index];
+
+            if(request.complete)
+            {
+                return (
+                    <Badge color="secondary" pill>Request Complete</Badge>
+                );
+            }
+            else if(request.approvalCount >= (Math.round(this.state.contributorsCount/2)))
+            {
+                return(
+                    <Badge color="success" pill>Waiting for Finalize</Badge>
+                )
+            }
+            else
+            {
+                return (
+                    <Badge color="primary" pill>Waiting for Approvals</Badge>
+                );
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     renderRequests = () =>
     {
         if(this.state.requests)
@@ -257,6 +358,12 @@ class Request extends Component
                         <CardText>
                             {request.description}
                             <br /><br />
+
+                            <div style={{ fontSize: 22 }} >
+                                Status - {this.renderStatus(index)}
+                            </div>
+                            <br />
+
                             Amount of ether to be spent - {
                                 web3.utils.fromWei(request.value, "ether")
                             } ether
@@ -268,7 +375,10 @@ class Request extends Component
                             Number of Approvals Required - {this.state.contributorsCount}
                             
                             {this.renderApproveBtn(index)}
-                            <br /><br />
+                            
+                            {this.renderFinalizeBtn(index)}
+
+                            <br />
 
                             <div>
                             {
